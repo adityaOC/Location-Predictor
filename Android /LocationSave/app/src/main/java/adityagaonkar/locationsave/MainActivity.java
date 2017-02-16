@@ -55,12 +55,18 @@ public class MainActivity extends AppCompatActivity {
 
                     double latitude = gps.getLatitude();
                     double longitude = gps.getLongitude();
+                    double speed = gps.getSpeed();
                   //  int hours = new Time(System.currentTimeMillis()).getHours();
                     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: "
-                            + latitude + "\nLong: " + longitude + "\nhours : " + currentDateTimeString, Toast.LENGTH_LONG).show();
+                            + latitude + "\nLong: " + longitude + "\n speed = "+ speed + "\nhours : " + currentDateTimeString, Toast.LENGTH_LONG).show();
                     //save in DB
 
+                    //call Activity detector, get activity, send geo record with GPS info
+                    //call brodcast from activity detector service
+                    //get Geo record from brodcast receiver
+                    //save it in db
+                    //display it
 
                     DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 

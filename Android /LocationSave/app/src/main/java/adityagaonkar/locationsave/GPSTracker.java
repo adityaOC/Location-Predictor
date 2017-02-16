@@ -32,7 +32,7 @@ public class GPSTracker extends Service implements LocationListener {
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
-
+    double speed;
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
@@ -77,6 +77,7 @@ public class GPSTracker extends Service implements LocationListener {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+
                         }
                     }
                 }
@@ -97,6 +98,7 @@ public class GPSTracker extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+                                speed  = location.getSpeed();
                             }
                         }
                     }
@@ -121,6 +123,11 @@ public class GPSTracker extends Service implements LocationListener {
         }
     }
 
+
+    public  double getSpeed(){
+
+        return speed;
+    }
     /**
      * Function to get latitude
      * */

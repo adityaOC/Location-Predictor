@@ -16,6 +16,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
 
@@ -27,6 +28,14 @@
             android:name=".NewActivity"
             android:label="@string/title_activity_new"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <receiver android:name=".BrodcastManager">
+            <intent-filter>
+                <action android:name="com.LocationPredictor"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>
