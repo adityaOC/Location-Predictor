@@ -13,6 +13,7 @@ public class GeoRecord {
     String _latitude;
     String _longitude;
     String _dateTimeString;
+    String _speed;
 
 
     // Empty constructor
@@ -20,21 +21,23 @@ public class GeoRecord {
 
     }
     // constructor
-    public GeoRecord(int id,String _latitude,String _longitude){
+    public GeoRecord(int id,String _latitude,String _longitude,String _speed){
         this._id = id;
         //this._name = name;
         //this._phone_number = _phone_number;
         this._latitude = _latitude;
         this._longitude = _longitude;
+        this._speed = _speed;
     }
 
     // constructor // in use
-    public GeoRecord(String _dateTimeString,String _latitude,String _longitude){
+    public GeoRecord(String _dateTimeString,String _latitude,String _longitude,String _speed){
        // this._name = name;
        // this._phone_number = _phone_number;
         this._latitude = _latitude;
         this._longitude = _longitude;
         this._dateTimeString = _dateTimeString;
+        this._speed = _speed;
     }
     // getting ID
     public int getID(){
@@ -71,5 +74,12 @@ public class GeoRecord {
 
     public void setDateTimeString(String dateTimeString){
         this._dateTimeString = dateTimeString;
+    }
+
+    public void setSpeed(String speed){
+        this._speed = speed;
+    }
+    public String getSpeed(){
+        return this._speed;
     }
 }

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("Insert: ", "Inserting ..");
 
 
-                    db.addContact(new GeoRecord(String.valueOf(currentDateTimeString),String.valueOf(latitude),String.valueOf(longitude)));
+                    db.addContact(new GeoRecord(String.valueOf(currentDateTimeString),String.valueOf(latitude),String.valueOf(longitude),String.valueOf(speed)));
 
 
                     // Reading all contacts

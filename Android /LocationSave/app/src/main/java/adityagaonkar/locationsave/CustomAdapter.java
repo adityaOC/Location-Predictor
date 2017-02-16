@@ -53,7 +53,9 @@ public class CustomAdapter extends BaseAdapter {
        // ImageView icon = (ImageView) view.findViewById(R.id.icon);
         GeoRecord r = recordsList.get(i);
 
-        String display = r.getLatituded() + " , " + r.getLongitude() + " \n " + r.getDateTimeString();
+        String display = r.getLatituded() + " , " + r.getLongitude() + " \n " + r.getDateTimeString()
+                +"\n speed = " +r.getSpeed() + " km/hr";
+                ;
         country.setText(display);
        // icon.setImageResource(flags[i]);
         return view;

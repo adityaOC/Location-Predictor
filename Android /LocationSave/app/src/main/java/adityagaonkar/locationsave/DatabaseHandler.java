@@ -18,7 +18,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "GeoLocationsDB";
@@ -33,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String DATETIME = "dateTime";
+    private static final String SPEED = "speed";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,7 +49,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                // + KEY_PH_NO + " TEXT," +
                 DATETIME + " TEXT," +
                 LATITUDE + " TEXT," +
-                LONGITUDE + " TEXT" +
+                LONGITUDE + " TEXT," +
+                SPEED + " TEXT" +
                 ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -77,6 +79,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(DATETIME,geoRecord.getDateTimeString());
         values.put(LATITUDE,geoRecord.getLatituded());
         values.put(LONGITUDE,geoRecord.getLongitude());
+        values.put(SPEED,geoRecord.getSpeed());
         // Inserting Row
         db.insert(TABLE_LOCATIONS, null, values);
         db.close(); // Closing database connection
@@ -90,14 +93,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 KEY_ID,
                 DATETIME,
                 LATITUDE,
-                LONGITUDE
+                LONGITUDE,
+                SPEED
         }, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         GeoRecord geoRecord = new GeoRecord(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2));
+                cursor.getString(1), cursor.getString(2),cursor.getString(3));
 
 
         // return contact
@@ -121,6 +125,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 geoRecord.setDateTimeString(cursor.getString(1));
                 geoRecord.setLatitude(cursor.getString(2));
                 geoRecord.setLongitude(cursor.getString(3));
+                geoRecord.setSpeed(cursor.getString(4));
                 // Adding contact to list
                 contactList.add(geoRecord);
             } while (cursor.moveToNext());
