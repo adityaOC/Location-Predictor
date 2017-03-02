@@ -1,4 +1,4 @@
-package adityagaonkar.activityrecognition;
+package adityagaonkar.locationsave;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.widget.Toast;
  * Created by adityagaonkr on 16/02/17.
  */
 
-public class BrodcastManager  extends BroadcastReceiver {
+public class BrodcastManager extends BroadcastReceiver {
 
 
     @Override
@@ -21,7 +21,9 @@ public class BrodcastManager  extends BroadcastReceiver {
           //  Integer  intValue = (Integer)intent.getSerializableExtra("ActivityTyepe");
             String  strValue = (String)intent.getSerializableExtra("ActivityTyepeString");
             Person  p = (Person)intent.getExtras().getParcelable("personObj");
-            Toast.makeText(context,strValue +"persone name = "+ p.name, Toast.LENGTH_SHORT).show();
+            GeoRecord  gr = (GeoRecord)intent.getExtras().getParcelable("GeoRecord");
+            UserActivity userActivity = gr.userActivities.get(0);
+            Toast.makeText(context,strValue +"Geo time = "+  userActivity.activityName , Toast.LENGTH_SHORT).show();
 
         }
     }

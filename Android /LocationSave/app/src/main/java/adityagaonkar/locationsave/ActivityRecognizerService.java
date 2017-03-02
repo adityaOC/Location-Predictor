@@ -1,7 +1,7 @@
-package adityagaonkar.activityrecognition;
+package adityagaonkar.locationsave;
 
 /**
- * Created by adityagaonkr on 15/02/17.
+ * Created by adityagaonkr on 19/02/17.
  */
 import android.app.IntentService;
 import android.content.Intent;
@@ -16,21 +16,23 @@ import android.widget.Toast;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
+import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
-public class ActivityRecognizedService extends IntentService {
+import static adityagaonkar.locationsave.GeoRecord.*;
+
+
+public class ActivityRecognizerService extends IntentService {
 
 
     // public  String currentActivity;
-    public ActivityRecognizedService() {
+    public ActivityRecognizerService() {
 
         super("ActivityRecognizedService");
 
     }
 
-    public ActivityRecognizedService(String name) {
+    public ActivityRecognizerService(String name) {
         super(name);
         // Toast.makeText(getApplicationContext(), "super ", Toast.LENGTH_LONG).show();
     }
@@ -42,7 +44,7 @@ public class ActivityRecognizedService extends IntentService {
          b.putString("ServiceTag", "callback bundle");
          rec.send(0, b);*/
     }
-
+//(String activityType,String time,String latitude,String longitude)
     private void triggerBroadcast(String activityType) {
         Intent bIntent = new Intent();
         bIntent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -50,10 +52,14 @@ public class ActivityRecognizedService extends IntentService {
         //  bIntent.putExtra("ActivityTyepe", activity.getType());
         bIntent.putExtra("ActivityTyepeString", activityType);
 
-        Person p = new Person();
-        p.name = "name of person";
-        p.address = "address of person";
-        bIntent.putExtra("personObj",p);
+        GeoRecord r = new GeoRecord();
+        r.setDateTimeString("Geo time");
+        r.setLongitude("Geo long");
+        UserActivity activity = new UserActivity("user actiivity name",1, UserActivity.ActivityCode.IN_VEHICLE);
+        r.userActivities.add(activity);
+
+        bIntent.putExtra("GeoRecord",r);
+
         sendBroadcast(bIntent);
         System.out.println("HIT OUTGOING switch");
 
@@ -62,22 +68,7 @@ public class ActivityRecognizedService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-       /*  Bundle getBundle = null;
-        getBundle = intent.getExtras();
-        String name = getBundle.getString("name");
-        String id = getBundle.getString("iname");
-
-        Person  person = (Person)getBundle.getParcelable("personObject2");
-       // Person  person = (Person)intent.getExtras().getParcelable("personObject");
-        if (person == null){
-            Log.e("ActivityRecogition", "person value null");
-        }else {
-            Log.e("ActivityRecogition", "person name = "+ person.name);
-        }*/
-
-
-
-       if (ActivityRecognitionResult.hasResult(intent)) {
+        if (ActivityRecognitionResult.hasResult(intent)) {
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             handleDetectedActivities(result.getProbableActivities(), intent);
 
@@ -87,20 +78,19 @@ public class ActivityRecognizedService extends IntentService {
     }
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities, Intent intent) {
+       // String  strValue = (String)intent.getSerializableExtra("ActivityTyepeString");
+        GeoRecord geoRecord = new GeoRecord();
+        String  timeString = (String)intent.getSerializableExtra("timeString");
+        String  latitudeString = (String)intent.getSerializableExtra("latitudeString");
+        String  longitudeString = (String)intent.getSerializableExtra("longitudeString");
 
+        geoRecord.setDateTimeString(timeString);
+        geoRecord.setLatitude(latitudeString);
+        geoRecord.setLongitude(longitudeString);
 
         for (DetectedActivity activity : probableActivities) {
-            Integer  intValue = (Integer)intent.getSerializableExtra("IDvalue");
-            Double  lat = (Double)intent.getSerializableExtra("latitude");
-            Double  lng = (Double)intent.getSerializableExtra("longitude");
 
-            NotificationCompat.Builder builderC = new NotificationCompat.Builder(this);
-            builderC.setContentText("Common");
-            builderC.setSmallIcon(R.mipmap.ic_launcher);
-            builderC.setContentTitle(getString(R.string.app_name));
-            NotificationManagerCompat.from(this).notify(0, builderC.build());
-
-
+            UserActivity userActivity;
             String strAct = "";
             switch (activity.getType()) {
                 case DetectedActivity.IN_VEHICLE: {
@@ -114,7 +104,7 @@ public class ActivityRecognizedService extends IntentService {
                         // currentActivity = "Still";
                     }
                     triggerBroadcast("In vehical");
-                    triggerCallback("In vehical", intent);
+                   // triggerCallback("In vehical", intent);
 
                     break;
                 }
@@ -237,7 +227,7 @@ public String getCurrentActivity(){
 }
 */
 
-    //  Toast.makeText(getApplicationContext(), "onHandleIntent ", Toast.LENGTH_LONG).show();
+//  Toast.makeText(getApplicationContext(), "onHandleIntent ", Toast.LENGTH_LONG).show();
 
 
 

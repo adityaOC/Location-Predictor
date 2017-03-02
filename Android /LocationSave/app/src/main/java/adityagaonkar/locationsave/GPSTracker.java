@@ -30,9 +30,13 @@ public class GPSTracker extends Service implements LocationListener {
     boolean canGetLocation = false;
 
     Location location; // location
+    Location prevLocation;
     double latitude; // latitude
     double longitude; // longitude
     double speed;
+    double speed2;
+    double calculatedSpeed = 0;
+
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
@@ -78,6 +82,9 @@ public class GPSTracker extends Service implements LocationListener {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
 
+
+        prevLocation = location;
+
                         }
                     }
                 }
@@ -98,7 +105,8 @@ public class GPSTracker extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
-                                speed  = location.getSpeed();
+                               // speed  = location.getSpeed();
+
                             }
                         }
                     }
@@ -128,6 +136,11 @@ public class GPSTracker extends Service implements LocationListener {
 
         return speed;
     }
+    public  double getSpeed2(){
+
+        return speed2;
+    }
+
     /**
      * Function to get latitude
      * */
@@ -198,6 +211,17 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        if (prevLocation != null) {
+            double elapsedTime = (location.getTime() - prevLocation.getTime()) / 1_000; // Convert milliseconds to seconds
+            calculatedSpeed = prevLocation.distanceTo(location) / elapsedTime;
+        }
+        this.prevLocation = location;
+
+        speed = location.hasSpeed() ? location.getSpeed() : calculatedSpeed;
+        speed = calculatedSpeed;
+
+
+        speed2 = location.getSpeed();
     }
 
     @Override
