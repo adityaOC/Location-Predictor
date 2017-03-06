@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.json.JSONException;
+
 /**
  * Created by adityagaonkr on 08/02/17.
  */
@@ -18,7 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "GeoLocationsDB";
@@ -34,6 +36,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String LONGITUDE = "longitude";
     private static final String DATETIME = "dateTime";
     private static final String SPEED = "speed";
+    private static final String OBJECTINFOJSON = "objectInfoJSONString";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -50,7 +53,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 DATETIME + " TEXT," +
                 LATITUDE + " TEXT," +
                 LONGITUDE + " TEXT," +
-                SPEED + " TEXT" +
+                SPEED     + " TEXT," +
+                OBJECTINFOJSON + " TEXT" +
+
                 ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -70,7 +75,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 
     // Adding new contact
-    void addContact(GeoRecord geoRecord) {
+    void addContact(GeoRecord geoRecord) throws JSONException {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -80,11 +85,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(LATITUDE,geoRecord.getLatituded());
         values.put(LONGITUDE,geoRecord.getLongitude());
         values.put(SPEED,geoRecord.getSpeed());
+
+
         // Inserting Row
         db.insert(TABLE_LOCATIONS, null, values);
         db.close(); // Closing database connection
     }
 
+    void addNewGeoRecord(GeoRecord geoRecord) throws JSONException {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        // values.put(KEY_NAME, geoRecord.getName()); // Contact Name
+        // values.put(KEY_PH_NO, geoRecord.getPhoneNumber()); // Contact Phone
+        values.put(DATETIME,geoRecord.getDateTimeString());
+        values.put(LATITUDE,geoRecord.getLatituded());
+        values.put(LONGITUDE,geoRecord.getLongitude());
+        values.put(SPEED,geoRecord.getSpeed());
+
+        if (geoRecord.get_objectInfoJSONString()!=null){
+            values.put(OBJECTINFOJSON,geoRecord.get_objectInfoJSONString());
+        }
+
+        // Inserting Row
+        db.insert(TABLE_LOCATIONS, null, values);
+        db.close(); // Closing database connection
+    }
     // Getting single contact
     GeoRecord getContact(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -94,7 +120,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 DATETIME,
                 LATITUDE,
                 LONGITUDE,
-                SPEED
+                SPEED,
+                OBJECTINFOJSON
         }, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
@@ -126,6 +153,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 geoRecord.setLatitude(cursor.getString(2));
                 geoRecord.setLongitude(cursor.getString(3));
                 geoRecord.setSpeed(cursor.getString(4));
+
+                String str= cursor.getString(5);
+                geoRecord.set_objectInfoJSON_DBString(str);
                 // Adding contact to list
                 contactList.add(geoRecord);
             } while (cursor.moveToNext());

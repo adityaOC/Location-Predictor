@@ -54,7 +54,7 @@ public class CustomAdapter extends BaseAdapter {
         GeoRecord r = recordsList.get(i);
 
         String display = r.getLatituded() + " , " + r.getLongitude() + " \n " + r.getDateTimeString()
-                +"\n speed = " +r.getSpeed() + " km/hr";
+                +"\n speed = " +r.getSpeed() + " km/hr" + "\n Activities : "+ r.get_objectInfoJSON_DBString();
                 ;
         country.setText(display);
        // icon.setImageResource(flags[i]);

@@ -20,6 +20,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import static adityagaonkar.locationsave.GeoRecord.*;
+import static adityagaonkar.locationsave.UserActivity.InVehicleActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.OnBicycleActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.OnFootActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.RunningActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.StillActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.TiltingActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.UnknownActivityDisplayText;
+import static adityagaonkar.locationsave.UserActivity.WalkingActivityDisplayText;
 
 
 public class ActivityRecognizerService extends IntentService {
@@ -38,27 +46,13 @@ public class ActivityRecognizerService extends IntentService {
     }
 
 
-    private void triggerCallback(String activityName, Intent intent) {
-        /* ResultReceiver rec = intent.getParcelableExtra("receiverTag");
-         Bundle b = new Bundle();
-         b.putString("ServiceTag", "callback bundle");
-         rec.send(0, b);*/
-    }
-//(String activityType,String time,String latitude,String longitude)
-    private void triggerBroadcast(String activityType) {
+
+    private void triggerBroadcast(GeoRecord geoRecord) {
         Intent bIntent = new Intent();
         bIntent.addCategory(Intent.CATEGORY_DEFAULT);
         bIntent.setAction("com.LocationPredictor");
-        //  bIntent.putExtra("ActivityTyepe", activity.getType());
-        bIntent.putExtra("ActivityTyepeString", activityType);
-
-        GeoRecord r = new GeoRecord();
-        r.setDateTimeString("Geo time");
-        r.setLongitude("Geo long");
-        UserActivity activity = new UserActivity("user actiivity name",1, UserActivity.ActivityCode.IN_VEHICLE);
-        r.userActivities.add(activity);
-
-        bIntent.putExtra("GeoRecord",r);
+        
+        bIntent.putExtra("GeoRecord",geoRecord);
 
         sendBroadcast(bIntent);
         System.out.println("HIT OUTGOING switch");
@@ -90,7 +84,7 @@ public class ActivityRecognizerService extends IntentService {
 
         for (DetectedActivity activity : probableActivities) {
 
-            UserActivity userActivity;
+
             String strAct = "";
             switch (activity.getType()) {
                 case DetectedActivity.IN_VEHICLE: {
@@ -103,8 +97,10 @@ public class ActivityRecognizerService extends IntentService {
                         NotificationManagerCompat.from(this).notify(0, builder.build());
                         // currentActivity = "Still";
                     }
-                    triggerBroadcast("In vehical");
-                   // triggerCallback("In vehical", intent);
+
+                  //add activity to geo record
+                    UserActivity userActivity = new UserActivity(InVehicleActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.IN_VEHICLE);
+                    geoRecord.userActivities.add(userActivity);
 
                     break;
                 }
@@ -118,8 +114,8 @@ public class ActivityRecognizerService extends IntentService {
                         NotificationManagerCompat.from(this).notify(0, builder.build());
                         // currentActivity = "Still";
                     }
-                    triggerBroadcast("on bicycle");
-                    triggerCallback("On Bicycle", intent);
+                    UserActivity userActivity = new UserActivity(OnBicycleActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.ON_BICYCLE);
+                    geoRecord.userActivities.add(userActivity);
 
                     break;
                 }
@@ -134,9 +130,9 @@ public class ActivityRecognizerService extends IntentService {
                         // currentActivity = "Still";
                     }
 
-                    strAct = "On Foot";
-                    triggerBroadcast("on foot");
-                    triggerCallback(strAct, intent);
+                    UserActivity userActivity = new UserActivity(OnFootActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.ON_FOOT);
+                    geoRecord.userActivities.add(userActivity);
+
                     break;
                 }
                 case DetectedActivity.RUNNING: {
@@ -149,8 +145,10 @@ public class ActivityRecognizerService extends IntentService {
                         NotificationManagerCompat.from(this).notify(0, builder.build());
                         // currentActivity = "Still";
                     }
-                    triggerBroadcast("Running");
-                    triggerCallback("", intent);
+                    UserActivity userActivity = new UserActivity(RunningActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.RUNNING);
+                    geoRecord.userActivities.add(userActivity);
+
+
                     break;
                 }
                 case DetectedActivity.STILL: {
@@ -163,10 +161,10 @@ public class ActivityRecognizerService extends IntentService {
                         NotificationManagerCompat.from(this).notify(0, builder.build());
                         // currentActivity = "Still";
                     }
+                    UserActivity userActivity = new UserActivity(StillActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.STILL);
+                    geoRecord.userActivities.add(userActivity);
 
-                    strAct = "Still";
-                    triggerBroadcast("Still");
-                    triggerCallback(strAct, intent);
+
                     break;
                 }
                 case DetectedActivity.TILTING: {
@@ -179,8 +177,9 @@ public class ActivityRecognizerService extends IntentService {
                         NotificationManagerCompat.from(this).notify(0, builder.build());
                         // currentActivity = "Walking";
                     }
-                    triggerBroadcast("Tilting");
-                    triggerCallback(strAct, intent);
+                    UserActivity userActivity = new UserActivity(TiltingActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.TILTING);
+                    geoRecord.userActivities.add(userActivity);
+
                     break;
                 }
                 case DetectedActivity.WALKING: {
@@ -193,9 +192,9 @@ public class ActivityRecognizerService extends IntentService {
                         NotificationManagerCompat.from(this).notify(0, builder.build());
                         // currentActivity = "Walking";
                     }
-                    strAct = "Walking";
-                    triggerBroadcast("Walking");
-                    triggerCallback(strAct, intent);
+                    UserActivity userActivity = new UserActivity(WalkingActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.WALKING);
+                    geoRecord.userActivities.add(userActivity);
+
                     break;
                 }
                 case DetectedActivity.UNKNOWN: {
@@ -207,8 +206,10 @@ public class ActivityRecognizerService extends IntentService {
                     builder.setContentTitle(getString(R.string.app_name));
                     NotificationManagerCompat.from(this).notify(0, builder.build());
                     // currentActivity = "Still";
-                    triggerBroadcast("Unknown");
-                    triggerCallback(strAct, intent);
+
+
+                    UserActivity userActivity = new UserActivity(UnknownActivityDisplayText,activity.getConfidence(), UserActivity.ActivityCode.UNKNOWN);
+                    geoRecord.userActivities.add(userActivity);
                     break;
                 }
             }
@@ -216,6 +217,9 @@ public class ActivityRecognizerService extends IntentService {
 
         }
 
+        //TODO : trigger broadcast when all activities are added to Geo record
+
+            triggerBroadcast(geoRecord);
     }
 
 }

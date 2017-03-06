@@ -7,7 +7,19 @@ import android.os.Parcelable;
  * Created by adityagaonkr on 20/02/17.
  */
 
+
 public class UserActivity implements Parcelable {
+
+    public static final String InVehicleActivityDisplayText = "In Vehicle";
+    public static final String OnBicycleActivityDisplayText = "On Bicycle";
+    public static final String OnFootActivityDisplayText = "On Foot";
+    public static final String StillActivityDisplayText = "Still";
+    public static final String UnknownActivityDisplayText = "Unknown";
+    public static final String TiltingActivityDisplayText = "Tilting";
+    public static final String WalkingActivityDisplayText = "Walking";
+    public static final String RunningActivityDisplayText = "Running";
+
+
     public enum ActivityCode {
 
         IN_VEHICLE,

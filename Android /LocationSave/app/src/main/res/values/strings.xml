@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LocationSave</string>
     <string name="title_activity_record_list">RecordListActivity</string>
+
 </resources>

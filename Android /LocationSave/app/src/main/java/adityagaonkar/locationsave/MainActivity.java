@@ -2,6 +2,7 @@ package adityagaonkar.locationsave;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        MyApplication mApplication = new MyApplication();
         btnShowLocation = (Button) findViewById(R.id.getLocationButton);
 
         mApiClient = new GoogleApiClient.Builder(getApplicationContext())
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     //save in DB
 
                     //call Activity detector, get activity, send geo record with GPS info
-                    getActivity(currentDateTimeString,String.valueOf(latitude),String.valueOf(longitude));
+                    getActivity(currentDateTimeString,String.valueOf(latitude),String.valueOf(longitude),getApplicationContext());
                     //call brodcast from activity detector service
                     //get Geo record from brodcast receiver
                     //save it in db
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         });
     }
 
-    public void getActivity(String time,String latitude,String longitude){
+    public void getActivity(String time, String latitude, String longitude, Context context){
 
 
         Toast.makeText(this, "getActivity ", Toast.LENGTH_SHORT).show();

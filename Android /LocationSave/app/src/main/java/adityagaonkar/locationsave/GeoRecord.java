@@ -3,6 +3,10 @@ package adityagaonkar.locationsave;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -17,6 +21,8 @@ public class GeoRecord implements Parcelable {
     String _longitude;
     String _dateTimeString;
     String _speed;
+    String _objectInfoJSONString;
+    String _objectInfoJSON_DBString;
     ArrayList<UserActivity> userActivities = new ArrayList<UserActivity>();
 
 
@@ -41,6 +47,17 @@ public class GeoRecord implements Parcelable {
         this._dateTimeString = _dateTimeString;
         this._speed = _speed;
     }
+    // constructor // in use //DB
+    public GeoRecord(String _dateTimeString,String _latitude,String _longitude,String _speed,String _objectInfoJSON_DBString){
+        // this._name = name;
+        // this._phone_number = _phone_number;
+        this._latitude = _latitude;
+        this._longitude = _longitude;
+        this._dateTimeString = _dateTimeString;
+        this._speed = _speed;
+        this._objectInfoJSON_DBString = _objectInfoJSON_DBString;
+    }
+
     // getting ID
     public int getID(){
         return this._id;
@@ -85,6 +102,42 @@ public class GeoRecord implements Parcelable {
         return this._speed;
     }
 
+    public void set_objectInfoJSON_DBString(String str){this._objectInfoJSON_DBString = str;}
+    public  String get_objectInfoJSON_DBString(){return  this._objectInfoJSON_DBString;}
+
+    public String get_objectInfoJSONString() throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+
+        for (UserActivity uActivity  : userActivities) {
+            JSONObject uAct = new JSONObject();
+            try {
+               // uAct.put("key", "value");
+                uAct.put("activityName",uActivity.activityName);
+                uAct.put("activityConfidence",uActivity.activityConfidence.toString());
+                uAct.put("activityCode",uActivity.activityCode.toString());
+
+                jsonArray.put(uAct);
+
+
+
+               /* object.put("name", "Jack Hack");
+                object.put("score", new Integer(200));
+                object.put("current", new Double(152.32));
+                object.put("nickname", "Hacker");*/
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
+        }
+        JSONObject activitiesJson = new JSONObject();
+        activitiesJson.put("activitiesJsonArray", jsonArray);
+
+
+        return activitiesJson.toString();
+    }
+
 
     @Override
     public int describeContents() {
@@ -98,6 +151,8 @@ public class GeoRecord implements Parcelable {
         dest.writeString(this._longitude);
         dest.writeString(this._dateTimeString);
         dest.writeString(this._speed);
+        dest.writeString(this._objectInfoJSONString);
+        dest.writeString(this._objectInfoJSON_DBString);
         dest.writeList(this.userActivities);
     }
 
@@ -107,6 +162,8 @@ public class GeoRecord implements Parcelable {
         this._longitude = in.readString();
         this._dateTimeString = in.readString();
         this._speed = in.readString();
+        this._objectInfoJSONString = in.readString();
+        this._objectInfoJSON_DBString = in.readString();
         this.userActivities = new ArrayList<UserActivity>();
         in.readList(this.userActivities, UserActivity.class.getClassLoader());
     }
