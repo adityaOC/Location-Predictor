@@ -51,7 +51,7 @@ public class ActivityRecognizerService extends IntentService {
         Intent bIntent = new Intent();
         bIntent.addCategory(Intent.CATEGORY_DEFAULT);
         bIntent.setAction("com.LocationPredictor");
-        
+
         bIntent.putExtra("GeoRecord",geoRecord);
 
         sendBroadcast(bIntent);
@@ -66,6 +66,16 @@ public class ActivityRecognizerService extends IntentService {
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             handleDetectedActivities(result.getProbableActivities(), intent);
 
+        }else{
+            GeoRecord geoRecord = new GeoRecord();
+            String  timeString = (String)intent.getSerializableExtra("timeString");
+            String  latitudeString = (String)intent.getSerializableExtra("latitudeString");
+            String  longitudeString = (String)intent.getSerializableExtra("longitudeString");
+
+            geoRecord.setDateTimeString(timeString);
+            geoRecord.setLatitude(latitudeString);
+            geoRecord.setLongitude(longitudeString);
+            triggerBroadcast(geoRecord);
         }
 
         Log.e("ActivityRecogition", "onHandleIntent");
@@ -264,4 +274,4 @@ public String getCurrentActivity(){
 
           //  runnable.run();*/
 
-
+//testing git commit
