@@ -20,7 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "GeoLocationsDB";
@@ -37,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATETIME = "dateTime";
     private static final String SPEED = "speed";
     private static final String OBJECTINFOJSON = "objectInfoJSONString";
+    private static final String USERNAME = "username";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,8 +55,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 LATITUDE + " TEXT," +
                 LONGITUDE + " TEXT," +
                 SPEED     + " TEXT," +
-                OBJECTINFOJSON + " TEXT" +
-
+                OBJECTINFOJSON + " TEXT," +
+                USERNAME + " TEXT" +
                 ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -85,7 +86,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(LATITUDE,geoRecord.getLatituded());
         values.put(LONGITUDE,geoRecord.getLongitude());
         values.put(SPEED,geoRecord.getSpeed());
-
+        values.put(USERNAME,MyApplication.getUsername());
 
         // Inserting Row
         db.insert(TABLE_LOCATIONS, null, values);
@@ -102,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(LATITUDE,geoRecord.getLatituded());
         values.put(LONGITUDE,geoRecord.getLongitude());
         values.put(SPEED,geoRecord.getSpeed());
-
+        values.put(USERNAME,MyApplication.getUsername());
         if (geoRecord.get_objectInfoJSONString()!=null){
             values.put(OBJECTINFOJSON,geoRecord.get_objectInfoJSONString());
         }
@@ -121,7 +122,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 LATITUDE,
                 LONGITUDE,
                 SPEED,
-                OBJECTINFOJSON
+                OBJECTINFOJSON,
+                USERNAME
         }, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
@@ -156,6 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 String str= cursor.getString(5);
                 geoRecord.set_objectInfoJSON_DBString(str);
+                geoRecord.setUserName(cursor.getString(6));
                 // Adding contact to list
                 contactList.add(geoRecord);
             } while (cursor.moveToNext());

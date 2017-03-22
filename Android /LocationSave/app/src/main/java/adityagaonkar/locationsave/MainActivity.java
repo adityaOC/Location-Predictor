@@ -30,6 +30,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 
+
+/* TODO: 1. username
+        2.GPS as service, when to collect data
+        3. Export data to file
+        4. export data based on time, days, weeks
+        */
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     Button btnShowLocation;
@@ -131,6 +138,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    public void openSettingsActivity(View view){
+
+        Intent newActivity = new Intent(getApplicationContext(),SettingsActivity.class);
+        startActivity(newActivity);
+
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

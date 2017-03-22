@@ -23,6 +23,7 @@ public class GeoRecord implements Parcelable {
     String _speed;
     String _objectInfoJSONString;
     String _objectInfoJSON_DBString;
+    String _userName;
     ArrayList<UserActivity> userActivities = new ArrayList<UserActivity>();
 
 
@@ -48,7 +49,7 @@ public class GeoRecord implements Parcelable {
         this._speed = _speed;
     }
     // constructor // in use //DB
-    public GeoRecord(String _dateTimeString,String _latitude,String _longitude,String _speed,String _objectInfoJSON_DBString){
+    public GeoRecord(String _dateTimeString,String _latitude,String _longitude,String _speed,String _objectInfoJSON_DBString,String _userName){
         // this._name = name;
         // this._phone_number = _phone_number;
         this._latitude = _latitude;
@@ -56,6 +57,7 @@ public class GeoRecord implements Parcelable {
         this._dateTimeString = _dateTimeString;
         this._speed = _speed;
         this._objectInfoJSON_DBString = _objectInfoJSON_DBString;
+        this._userName = _userName;
     }
 
     // getting ID
@@ -95,6 +97,9 @@ public class GeoRecord implements Parcelable {
         this._dateTimeString = dateTimeString;
     }
 
+    public void setUserName(String userName){this._userName = userName;}
+    public String getUserName(){return this._userName;}
+
     public void setSpeed(String speed){
         this._speed = speed;
     }
@@ -104,6 +109,7 @@ public class GeoRecord implements Parcelable {
 
     public void set_objectInfoJSON_DBString(String str){this._objectInfoJSON_DBString = str;}
     public  String get_objectInfoJSON_DBString(){return  this._objectInfoJSON_DBString;}
+
 
     public String get_objectInfoJSONString() throws JSONException {
         JSONArray jsonArray = new JSONArray();
@@ -153,7 +159,9 @@ public class GeoRecord implements Parcelable {
         dest.writeString(this._speed);
         dest.writeString(this._objectInfoJSONString);
         dest.writeString(this._objectInfoJSON_DBString);
+        dest.writeString(this._userName);
         dest.writeList(this.userActivities);
+
     }
 
     protected GeoRecord(Parcel in) {
@@ -164,6 +172,7 @@ public class GeoRecord implements Parcelable {
         this._speed = in.readString();
         this._objectInfoJSONString = in.readString();
         this._objectInfoJSON_DBString = in.readString();
+        this._userName = in.readString();
         this.userActivities = new ArrayList<UserActivity>();
         in.readList(this.userActivities, UserActivity.class.getClassLoader());
     }
